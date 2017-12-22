@@ -35,7 +35,8 @@ public Slave(Socket sock, ArrayList<String> sensors, String adressTo, int portTo
                 DataOutputStream toClient = new DataOutputStream(sock.getOutputStream());
                 //TODO : Ici il faut mettre le code pour retourner les infos que le client demande
                 //toClient.writeBytes(result);
-                if(command.contains("Size")) sendMessageSize();
+                if(command.contains("getSize")) sendMessageSize();
+                if(command.contains("getStateAll")) sendMessageSensors();
             } else {
                 int indexSensor = Integer.parseInt(""+command.charAt(0)) - 1;
                 //TODO : Ici il faut gérer la BDD des capteurs et de leur état en fonction du message reçu
