@@ -1,9 +1,14 @@
 package Client;
 
+
 public class Client {
 
     public static void main (String[] args) {
-        //TODO
+        Window window = new Window();
     }
+
+
+
+
 
 }
