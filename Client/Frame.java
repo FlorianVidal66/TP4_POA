@@ -35,7 +35,6 @@ public class Frame extends JFrame implements ActionListener{
         this.size = Integer.parseInt(request("C:getSize"));
 
         panel = new JPanel();
-        System.out.println((size/2)+1);
         GridLayout grid = new GridLayout((size/2)+1,2);
         panel.setLayout(grid);
 

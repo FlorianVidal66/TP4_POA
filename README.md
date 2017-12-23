@@ -8,6 +8,7 @@ L'objectif est de faire une petite simulation d’un espace de parking. Donc, pl
 * Lancer la méthode main de la classe Server
 * Lancer la méthode main de la classe CreateSensors
 * Lancer la méthode main de la classe Client
+* * Cliquer sur le bouton **Actualiser** pour rafraîchir l'application
 
 ## Authors
 
