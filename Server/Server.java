@@ -19,7 +19,7 @@ public class Server {
             System.out.println("Server.Server started !");
             while(true) {
                 // Hand down the incoming request to a slave
-                Slave slave = new Slave(servSock.accept(), sensors, "localhost", 6666);
+                Slave slave = new Slave(servSock.accept(), sensors);
                 slave.start();
             }
         } catch (IOException e) {

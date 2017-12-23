@@ -4,24 +4,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.Socket;
 
-public class Window extends JFrame implements ActionListener {
+public class Frame extends JFrame implements ActionListener{
 
+    private String adressTo;
+    private int    portTo;
+    private Socket socket;
 
     private JPanel panel;
-
     private int size;
 
-    private Socket           socket;
-    private DataOutputStream toServer;
-    private BufferedReader   fromServer;
 
-    public Window(){
+    public Frame(String adressTo, int portTo) {
+
         this.setTitle("TP4_POA");
         this.setSize(900, 600);
         this.setLocationRelativeTo(null);
@@ -33,45 +30,36 @@ public class Window extends JFrame implements ActionListener {
         this.getContentPane().add(refreshButton, BorderLayout.NORTH);
 
         // Get the number of sensors
-        openSocket();
-        try {
-            toServer.writeBytes("C:getSize");
-            String response = fromServer.readLine();
-            size = Integer.parseInt(response);
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        closeSocket();
+        this.adressTo = adressTo;
+        this.portTo = portTo;
+        this.size = Integer.parseInt(request("C:getSize"));
 
         panel = new JPanel();
+        System.out.println((size/2)+1);
         GridLayout grid = new GridLayout((size/2)+1,2);
         panel.setLayout(grid);
 
         this.getContentPane().add(panel, BorderLayout.CENTER);
         this.setVisible(true);
+
+
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         panel = new JPanel();
-        GridLayout grid = new GridLayout(size/2,2);
+        GridLayout grid = new GridLayout((size/2)+1,2);
         panel.setLayout(grid);
 
         // Get the state from the server
-        openSocket();
-        String response ="";
-        try {
-            toServer.writeBytes("C:getStateAll");
-            response = fromServer.readLine();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
-        closeSocket();
+        String response = request("C:getStateAll");
 
         // Draw the state
         JPanel pan;
         for(int i=0; i < size; i++) {
             pan = new JPanel();
+            JLabel label = new JLabel(""+i);
+            pan.add(label);
             if(response.charAt(i) == '0') {
                 pan.setBackground(Color.green);
             } else if(response.charAt(i) == '1'){
@@ -86,23 +74,25 @@ public class Window extends JFrame implements ActionListener {
         this.setVisible(true);
     }
 
-    private void closeSocket() {
+    private String request(String message){
         try {
-            this.toServer.close();
-            this.fromServer.close();
+            this.socket = new Socket(adressTo, portTo);
+            OutputStream os = socket.getOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+            oos.writeObject(message);
+
+            InputStream is = socket.getInputStream();
+            ObjectInputStream ois = new ObjectInputStream(is);
+            String command = (String) ois.readObject();
+            System.out.println("Command: "+command);
             this.socket.close();
+            return command;
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
         }
+        return "";
     }
 
-    private void openSocket() {
-        try {
-            this.socket     = new Socket("localhost", 6666);
-            this.toServer   = new DataOutputStream(socket.getOutputStream());
-            this.fromServer = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }

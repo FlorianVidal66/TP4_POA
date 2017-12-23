@@ -4,11 +4,7 @@ package Client;
 public class Client {
 
     public static void main (String[] args) {
-        Window window = new Window();
+        Frame frame = new Frame("localhost",6666);
     }
-
-
-
-
 
 }

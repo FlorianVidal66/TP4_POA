@@ -2,7 +2,6 @@ package Sensor;
 
 import Filter.Filter1;
 import Filter.Filter2;
-import Sensor.Sensor;
 
 public class CreateSensors {
 
